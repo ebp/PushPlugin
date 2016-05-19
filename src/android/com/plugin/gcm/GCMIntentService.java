@@ -97,11 +97,24 @@ public class GCMIntentService extends GCMBaseIntentService {
 				defaults = Integer.parseInt(extras.getString("defaults"));
 			} catch (NumberFormatException e) {}
 		}
-		
+
+		int smallIcon = 0;
+
+		// For new versions, get a silhouette icon
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+			smallIcon = context.getResources().getIdentifier("ic_stat_name", "drawable", context.getPackageName());
+		}
+
+		// If no icon is found, use the app icon
+		if (smallIcon == 0) {
+			smallIcon = context.getApplicationInfo().icon;
+		}
+
+
 		NotificationCompat.Builder mBuilder =
 			new NotificationCompat.Builder(context)
 				.setDefaults(defaults)
-				.setSmallIcon(context.getApplicationInfo().icon)
+				.setSmallIcon(smallIcon)//.setSmallIcon(context.getApplicationInfo().icon)
 				.setWhen(System.currentTimeMillis())
 				.setContentTitle(extras.getString("title"))
 				.setTicker(extras.getString("title"))
